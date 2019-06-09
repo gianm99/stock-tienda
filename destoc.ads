@@ -6,7 +6,11 @@ package destoc is
 
    type marca is (Nike,Adidas,Reebok,Asics,Fila,Puma,Quiksilver,Kappa,Joma,Converse);
    subtype codi is Integer range 0..5000000;
-   subtype nom is String(1..20);
+   type nom is record
+      s: String(1..20);
+      l: natural;
+   end record;
+   
    type producte;
    type pproducte is access producte;
    type producte is record
@@ -34,7 +38,7 @@ package destoc is
    -- necessitat de seguir cap ordre.
    procedure imprimir_productes_marca (c: in estoc; m: in marca);
    -- Imprimeix tots els productes de la tenda (codi, nom i unitats) ordenats
-   -- ascendentment pel seu codi
+   -- ascendentme   nt pel seu codi
    procedure imprimir_estoc_total (c: in estoc);
 private
    function menor(k1,k2: in codi) return boolean;

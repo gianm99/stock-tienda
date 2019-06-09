@@ -18,11 +18,11 @@ package body destoc is
       n: nom renames x.n;
       unitats: integer renames x.unitats; 
    begin
-      Ada.Integer_Text_IO.Put(k);
-      Put(" - ");
-      Ada.Text_IO.Put(n);
-      Put(" - ");
+      Put(k);
+      Put(" | ");
       Put(unitats);
+      Put(" | ");
+      Put(n.s(1..n.l));
       New_Line;
    end imprimir;
 
@@ -50,15 +50,16 @@ package body destoc is
       pp.n:=n; --nom
       pp.k:=k; --codi
       pp.unitats:=unitats; --unitats
+      --posicion en el arbol
+      poner(c.a,k,pp);
       --posicion en la lista
       pp.prev:=null; --no tiene anterior
       pp.next:=c.m(m).first;
       c.m(m).first:=pp; --primero
-      --posicion en el arbol
-      poner(c.a,k,pp);
    exception
       when dnodoarbol.ya_existe => raise destoc.mal_uso;
       when dnodoarbol.espacio_desbordado=> raise destoc.espacio_desbordado;
+      when Storage_Error=> raise destoc.espacio_desbordado;
    end posar_producte;
 
    -- Esborra el producte amb el codi donat. Nomes ha de poder esborrar-se
@@ -68,6 +69,8 @@ package body destoc is
    begin
       consultar(c.a,k,pp);
       if pp.unitats=0 then
+         --borrar del arbol
+         borrar(c.a,k);
          --borrar de su lista
          if c.m(pp.m).first=null then --lista vacia
             raise destoc.mal_uso;
@@ -81,8 +84,6 @@ package body destoc is
          if pp.prev/=null then -- no es el primero
             pp.prev.next:=pp.next;
          end if;
-         --borrar del arbol
-         borrar(c.a,k);
       else
          raise destoc.mal_uso;
       end if;
